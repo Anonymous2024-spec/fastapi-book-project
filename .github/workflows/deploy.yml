@@ -1,19 +1,30 @@
-name: Deploy to Render
+name: Deploy to Railway
 
 on:
   push:
     branches:
-      - main
+      - main # Trigger the deploy when pushing to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Trigger Render Deployment
-        env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
         run: |
-          curl -X POST $RENDER_DEPLOY_HOOK
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Push to Railway
+  run: |
+    curl -sSL https://railway.app/download.sh | bash
+    railway login --token ${{ secrets.RAILWAY_TOKEN }}
+    railway up --project ${{ secrets.RAILWAY_PROJECT_ID }}
