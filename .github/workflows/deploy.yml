@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          curl -sSL https://railway.app/download.sh | bash  # Install Railway CLI.
+          curl -sSL https://railway.app/install.sh | bash  # Correct Railway CLI URL
 
       - name: Log in to Railway
         run: |
