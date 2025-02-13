@@ -29,12 +29,8 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Login to Railway
-        run: |
-          echo ${{ secrets.RAILWAY_TOKEN }} | railway login
-
       - name: Deploy to Railway
-        run: railway up --service fastapi-book-project
+        uses: railwayapp/railway-action@v1
+        with:
+          railway_project: ${{ secrets.RAILWAY_PROJECT_ID }} # Make sure to store your project ID in GitHub secrets
+          railway_env: "production" # Specify environment like production
