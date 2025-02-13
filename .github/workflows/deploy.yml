@@ -38,6 +38,6 @@ jobs:
         run: railway up
 
       - name: Debug Railway Services
-  env:
-    RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-  run: railway status"
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway status"
