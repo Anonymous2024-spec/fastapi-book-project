@@ -29,10 +29,10 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Install and configure Railway
+      - name: Install and configure Railway CLI
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-  env:
-    RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-  run: railway up --service=focused-youthfulness
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway deploy --service=focused-youthfulness
