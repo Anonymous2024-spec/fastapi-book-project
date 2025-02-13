@@ -34,5 +34,5 @@ jobs:
 
       - name: Railway Deployment
         run: |
-          echo ${{ secrets.RAILWAY_TOKEN }} | railway login --token
+          echo ${{ secrets.RAILWAY_TOKEN }} | railway login
           railway up --project ${{ secrets.RAILWAY_PROJECT_ID }} --service ${{ secrets.RAILWAY_SERVICE_NAME }} --environment ${{ secrets.RAILWAY_ENVIRONMENT_NAME }}
