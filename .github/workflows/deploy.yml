@@ -32,12 +32,7 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Authenticate with Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway auth --token $RAILWAY_TOKEN
-
-      - name: Deploy to Railway (Specify Service Only)
+      - name: Deploy to Railway
         env:
           RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_PROJECT_NAME }}
-        run: railway up --service $RAILWAY_PROJECT_NAME
+        run: railway up --service "$RAILWAY_PROJECT_NAME"
