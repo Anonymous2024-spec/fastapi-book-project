@@ -29,8 +29,10 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Deploy to Railway
-        uses: railwayapp/railway-action@v1
-        with:
-          railway_project: ${{ secrets.RAILWAY_PROJECT_ID }} # Make sure to store your project ID in GitHub secrets
-          railway_env: "production" # Specify environment like production
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Railway Deployment
+        run: |
+          echo ${{ secrets.RAILWAY_TOKEN }} | railway login --token
+          railway up --project ${{ secrets.RAILWAY_PROJECT_ID }} --service ${{ secrets.RAILWAY_SERVICE_NAME }} --environment ${{ secrets.RAILWAY_ENVIRONMENT_NAME }}
