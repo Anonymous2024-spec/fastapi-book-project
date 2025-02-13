@@ -32,8 +32,5 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-<<<<<<< HEAD
       - name: Deploy to Railway
         run: railway up --service fastapi-book-project
-=======
->>>>>>> e02c2cd1b71f0ee656728417e3df3abc9a4cb16d
