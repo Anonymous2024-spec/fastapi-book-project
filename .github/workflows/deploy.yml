@@ -40,4 +40,4 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_SERVICE_NAME }}
-        run: railway up --service "$RAILWAY_SERVICE_NAME"
+        run: railway deploy --service "$RAILWAY_SERVICE_NAME"
