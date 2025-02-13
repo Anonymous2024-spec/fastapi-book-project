@@ -33,6 +33,4 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up
+        run: railway up --service fastapi-book-project
