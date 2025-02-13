@@ -11,29 +11,26 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Make sure the code is checked out.
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v4  # Set up Python version.
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Install project dependencies.
+          pip install -r requirements.txt
 
       - name: Install Railway CLI
         run: |
-<<<<<<< HEAD
-=======
-          bash <(curl -fsSL cli.new)  # Install Railway CLI using Bash script.
->>>>>>> feature/AmazingFeature
+          npm install -g @railway/cli
 
       - name: Log in to Railway
         run: |
-          railway login --token ${{ secrets.RAILWAY_TOKEN }}  # Authenticate with Railway.
+          railway login --token ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Deploy to Railway
         run: |
-          railway up --project ${{ secrets.RAILWAY_PROJECT_ID }}  # Deploy the application.
+          railway up --project ${{ secrets.RAILWAY_PROJECT_ID }}
