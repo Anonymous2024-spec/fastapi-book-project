@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Make sure the code is checked out.
+        uses: actions/checkout@v3  # Make sure the code is checked out.
 
       - name: Set up Python
-        uses: actions/setup-python@v4 # Set up Python version.
+        uses: actions/setup-python@v4  # Set up Python version.
         with:
           python-version: "3.9"
 
@@ -25,7 +25,10 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          curl -sSL https://railway.app/install.sh | bash  # Correct Railway CLI URL
+<<<<<<< HEAD
+=======
+          bash <(curl -fsSL cli.new)  # Install Railway CLI using Bash script.
+>>>>>>> feature/AmazingFeature
 
       - name: Log in to Railway
         run: |
