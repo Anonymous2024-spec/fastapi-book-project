@@ -23,17 +23,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          curl -fsSL https://railway.app/install.sh | bash
 
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway up --service focused-youthfulness
