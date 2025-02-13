@@ -29,10 +29,15 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Install and configure Railway
+      - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy to Railway
+      - name: Authenticate with Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up
+        run: railway auth --token $RAILWAY_TOKEN
+
+      - name: Deploy to Railway (Specify Service Only)
+        env:
+          RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_PROJECT_NAME }}
+        run: railway up --service $RAILWAY_PROJECT_NAME
