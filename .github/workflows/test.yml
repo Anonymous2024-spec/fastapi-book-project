@@ -1,43 +1,26 @@
-name: Deploy to Railway
+name: Test
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up
-
-      - name: Debug Railway Services
-  env:
-    RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-  run: railway status"
+      - name: Run tests
+        run: pytest
