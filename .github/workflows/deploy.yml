@@ -1,4 +1,3 @@
-
 name: deploy
 
 on:
@@ -10,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: 3.11
@@ -19,9 +18,9 @@ jobs:
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{secrets.HOST_DNS}}
-          key: ${{secrets.EC2_SSH_KEY}}
-          username: ${{secrets.USERNAME}}
+          host: ${{ secrets.HOST_DNS }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          username: ${{ secrets.USERNAME }}
           script: |
             echo "Starting deployment..."
 
@@ -36,12 +35,12 @@ jobs:
             # Setup virtual environment
             echo "Setting up virtual environment..."
             python3 -m venv venv || exit 1
-            source venv/bin/activate || exit 1
+            bash -c "source venv/bin/activate" || exit 1
 
             # Upgrade pip
             python -m pip install --upgrade pip || exit 1
 
-            #Install fastapi
+            # Install fastapi
             pip install fastapi 
             echo "FastAPI installed successfully"
 
@@ -51,7 +50,7 @@ jobs:
 
             # Stop existing application if running
             echo "Stopping existing application..."
-            killall uvicorn || echo "No existing process found"
+            ps aux | grep 'uvicorn' | awk '{print $2}' | xargs kill || echo "No existing process found"
             echo "Application stopped successfully"
 
             # Start application
