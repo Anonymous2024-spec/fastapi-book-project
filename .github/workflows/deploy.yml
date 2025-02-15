@@ -25,7 +25,10 @@ jobs:
             echo "Starting deployment..."
 
             # Navigate to project directory
-            cd fastapi-book-project
+            if [ ! -d "/home/ubuntu/fastapi-book-project" ]; then
+              git clone https://github.com/Anonymous2024-spec/fastapi-book-project.git /home/ubuntu/fastapi-book-project
+            fi
+            cd /home/ubuntu/fastapi-book-project
 
             # Pull latest changes
             echo "Pulling latest changes..."
@@ -34,15 +37,11 @@ jobs:
 
             # Setup virtual environment
             echo "Setting up virtual environment..."
-            python3 -m venv venv || exit 1
-            bash -c "source venv/bin/activate" || exit 1
+            python3 -m venv venv
+            source venv/bin/activate
 
             # Upgrade pip
-            python -m pip install --upgrade pip || exit 1
-
-            # Install fastapi
-            pip install fastapi 
-            echo "FastAPI installed successfully"
+            python -m pip install --upgrade pip
 
             # Install dependencies
             echo "Installing dependencies..."
@@ -50,8 +49,7 @@ jobs:
 
             # Stop existing application if running
             echo "Stopping existing application..."
-            ps aux | grep 'uvicorn' | awk '{print $2}' | xargs kill || echo "No existing process found"
-            echo "Application stopped successfully"
+            ps aux | grep 'uvicorn main:app' | awk '{print $2}' | xargs kill || echo "No existing process found"
 
             # Start application
             echo "Starting application..."
