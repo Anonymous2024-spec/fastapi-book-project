@@ -14,7 +14,6 @@ jobs:
         with:
           python-version: 3.11
 
-      # Deploy to server
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -23,35 +22,43 @@ jobs:
           username: ${{ secrets.USERNAME }}
           script: |
             echo "Starting deployment..."
-
-            # Navigate to project directory
-            if [ ! -d "/home/ubuntu/fastapi-book-project" ]; then
+            
+            cd /home/ubuntu/fastapi-book-project || {
               git clone https://github.com/Anonymous2024-spec/fastapi-book-project.git /home/ubuntu/fastapi-book-project
-            fi
-            cd /home/ubuntu/fastapi-book-project
+              cd /home/ubuntu/fastapi-book-project
+            }
 
             # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch --all
+            git reset --hard HEAD
             git pull origin main
 
             # Setup virtual environment
-            echo "Setting up virtual environment..."
-            python3 -m venv venv
+            python3 -m venv venv || true
             source venv/bin/activate
 
-            # Upgrade pip
-            python -m pip install --upgrade pip
-
             # Install dependencies
-            echo "Installing dependencies..."
+            pip install --upgrade pip
             pip install -r requirements.txt
 
-            # Stop existing application if running
-            echo "Stopping existing application..."
-            ps aux | grep 'uvicorn main:app' | awk '{print $2}' | xargs kill || echo "No existing process found"
+            # Gracefully stop existing application
+            if pgrep -f "uvicorn main:app" > /dev/null; then
+              echo "Stopping existing application..."
+              pkill -f "uvicorn main:app"
+              sleep 5  # Give it time to shutdown
+            else
+              echo "No existing application running"
+            fi
 
             # Start application
             echo "Starting application..."
             nohup uvicorn main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
-            echo "Application started successfully"
+
+            # Verify application started
+            sleep 5
+            if curl -s http://localhost:8000/docs > /dev/null; then
+              echo "Application started successfully"
+            else
+              echo "Application failed to start"
+              tail -n 50 app.log
+              exit 1
+            fi
