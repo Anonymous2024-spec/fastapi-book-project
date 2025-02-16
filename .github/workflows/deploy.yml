@@ -1,59 +1,25 @@
-name: deploy
-
+name: Deploy Application
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.8
         with:
-          python-version: 3.11
-
-      # Deploy to server
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
-            echo "Starting deployment..."
-
-            # Navigate to project directory
             cd fastapi-book-project
-
-            # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch --all
+            git stash
             git pull origin main
-
-            # Setup virtual environment
-            echo "Setting up virtual environment..."
-            python3 -m venv venv || exit 1
-            bash -c "source venv/bin/activate" || exit 1
-
-            # Upgrade pip
-            python -m pip install --upgrade pip || exit 1
-
-            # Install fastapi
-            pip install fastapi 
-            echo "FastAPI installed successfully"
-
-            # Install dependencies
-            echo "Installing dependencies..."
-            pip install -r requirements.txt
-
-            # Stop existing application if running
-            echo "Stopping existing application..."
-            ps aux | grep 'uvicorn' | awk '{print $2}' | xargs kill || echo "No existing process found"
-            echo "Application stopped successfully"
-
-            # Start application
-            echo "Starting application..."
-            nohup uvicorn main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
-            echo "Application started successfully"
+            # Stop existing containers
+            docker-compose down || true
+            docker-compose up -d --build
+            docker ps
